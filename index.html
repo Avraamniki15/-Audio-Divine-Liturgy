@@ -8,16 +8,16 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #8b572a; /* Καφέ φόντο */
+            background-color: #8b572a;
             margin: 0;
             padding: 20px;
         }
         h1 {
-            color: #FFFFFF; /* Λευκός τίτλος */
+            color: #FFFFFF;
         }
         .header-image {
-            width: 270px; /* Ορίζει το πλάτος της εικόνας */
-            height: auto; /* Διατηρεί την αναλογία ύψους */
+            width: 270px;
+            height: auto;
             margin-bottom: 1px;
         }
         .dropdown {
@@ -31,28 +31,26 @@
             font-size: 14px;
             border-radius: 5px;
             border: 1px solid #ccc;
-            background-color: #FFFFCC; /* Κίτρινο-ανοιχτό */
+            background-color: #FFFFCC;
         }
         audio {
             margin-top: 20px;
             width: 98%;
-            background-color: #FFFFCC; /* Ελαφρύ γαλάζιο */
-            border: 2px solid #FFFFCC; /* Μπλε περίγραμμα */
-            border-radius: 10px; /* Στρογγυλεμένες γωνίες */
-            padding: 5px; /* Εσωτερικό padding */
+            background-color: #FFFFCC;
+            border: 2px solid #FFFFCC;
+            border-radius: 10px;
+            padding: 5px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Εικόνα πάνω από τον τίτλο -->
     <img src="path-to-your-image.png" alt="Ακουστικό Ωρολόγιο" class="header-image">
-
     <h1>ΑΚΟΥΣΤΙΚΗ ΘΕΙΑ ΛΕΙΤΟΥΡΓΙΑ - القداس الإلهي مسموع</h1>
 
     <div class="dropdown">
         <select id="prayerSelector" onchange="playSelectedPrayer()">
-            <option value="" disabled selected>Επίλεξε το Λειτουργικό απόσπασμα - اختار القطعة اليتورجية</option>
+            <option value="" disabled selected>Επίλεξε το Λειτουργικό απόσπασμα</option>
             <option value="a1.mp3">1. Δόξα και τιμή – مجدا و كرامة</option>
             <option value="a2.mp3">2. Προσεύξασθε υπέρ των αγίων - صلوا من اجل القرابين</option>
             <option value="a3.mp3">3. Αυτή είναι η ημέρα – هذا هو اليوم</option>
@@ -213,20 +211,41 @@
             <option value="a158.mp3">158. Αινείται το Θεό – التوزيع</option>
             <option value="a159.mp3">159. Βασιλέα της Ειρήνης – ملك السلام</option>
             <option value="a160.mp3">160. Ο λαός σου – لان شعبك</option>
-        </select>
+</select>
     </div>
 
     <audio id="audioPlayer" controls></audio>
 
     <script>
-        function playSelectedPrayer() {
-            const selector = document.getElementById('prayerSelector');
-            const audioPlayer = document.getElementById('audioPlayer');
-            const selectedFile = selector.value;
+        let audioPlayer = document.getElementById("audioPlayer");
+        let prayerSelector = document.getElementById("prayerSelector");
 
-            if (selectedFile) {
-                audioPlayer.src = selectedFile;
+        function playSelectedPrayer() {
+            let selectedIndex = prayerSelector.selectedIndex;
+            if (selectedIndex > 0) {
+                let selectedOption = prayerSelector.options[selectedIndex].value;
+                audioPlayer.src = selectedOption;
                 audioPlayer.play();
+
+                // Όταν τελειώσει, παίζει το επόμενο
+                audioPlayer.onended = function() {
+                    playNext(selectedIndex);
+                };
+            }
+        }
+
+        function playNext(currentIndex) {
+            let nextIndex = currentIndex + 1;
+            if (nextIndex < prayerSelector.options.length) {
+                prayerSelector.selectedIndex = nextIndex;
+                let nextOption = prayerSelector.options[nextIndex].value;
+                if (nextOption) {
+                    audioPlayer.src = nextOption;
+                    audioPlayer.play();
+                    audioPlayer.onended = function() {
+                        playNext(nextIndex);
+                    };
+                }
             }
         }
     </script>
